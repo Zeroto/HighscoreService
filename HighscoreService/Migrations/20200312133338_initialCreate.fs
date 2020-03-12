@@ -14,37 +14,68 @@ open Microsoft.EntityFrameworkCore.Storage.ValueConversion
 open Npgsql.EntityFrameworkCore.PostgreSQL.Metadata
 
 
-type private ScoresTable = {
+type private UsersTable = {
     id: OperationBuilder<AddColumnOperation>
     name: OperationBuilder<AddColumnOperation>
+}
+
+type private ScoresTable = {
+    id: OperationBuilder<AddColumnOperation>
+    userId: OperationBuilder<AddColumnOperation>
     value: OperationBuilder<AddColumnOperation>
 }
 
 [<DbContext(typeof<HighscoresContext>)>]
-[<Migration("20200311121226_initialCreate")>]
+[<Migration("20200312133338_initialCreate")>]
 type initialCreate() =
     inherit Migration()
 
     override this.Up(migrationBuilder:MigrationBuilder) =
+        migrationBuilder.CreateTable(
+            name = "Users"
+            ,columns = (fun table -> 
+            {
+                id = table.Column<int>(nullable = false)
+                    .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
+                name = table.Column<string>(nullable = true)
+            })
+            ,constraints =
+                (fun table -> 
+                    table.PrimaryKey("PK_Users", (fun x -> (x.id :> obj))) |> ignore
+                ) 
+            ) |> ignore
+
         migrationBuilder.CreateTable(
             name = "Scores"
             ,columns = (fun table -> 
             {
                 id = table.Column<int>(nullable = false)
                     .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-                name = table.Column<string>(nullable = true)
+                userId = table.Column<int>(nullable = false)
                 value = table.Column<int>(nullable = false)
             })
             ,constraints =
                 (fun table -> 
                     table.PrimaryKey("PK_Scores", (fun x -> (x.id :> obj))) |> ignore
+                    table.ForeignKey(
+                        name = "FK_Scores_Users_userId",
+                        column = (fun x -> (x.userId :> obj)), principalTable = "Users", principalColumn = "id", onDelete = ReferentialAction.Cascade) |> ignore
+
                 ) 
             ) |> ignore
+
+        migrationBuilder.CreateIndex(
+            name = "IX_Scores_userId"
+            , table = "Scores", column = "userId") |> ignore
 
 
     override this.Down(migrationBuilder:MigrationBuilder) =
         migrationBuilder.DropTable(
             name = "Scores"
+            ) |> ignore
+
+        migrationBuilder.DropTable(
+            name = "Users"
             ) |> ignore
 
 
@@ -58,7 +89,8 @@ type initialCreate() =
             b.Property<int>("id")
                 .ValueGeneratedOnAdd() |> ignore
 
-            b.Property<string>("name") |> ignore
+            b.Property<int>("userId")
+                .IsRequired() |> ignore
 
             b.Property<int>("value")
                 .IsRequired() |> ignore
@@ -67,6 +99,31 @@ type initialCreate() =
             b.HasKey("id") |> ignore
 
 
+            b.HasIndex("userId") |> ignore
+
+
             b.ToTable("Scores") |> ignore
+        )) |> ignore
+
+        modelBuilder.Entity("Models.User", (fun b ->
+
+            b.Property<int>("id")
+                .ValueGeneratedOnAdd() |> ignore
+
+            b.Property<string>("name") |> ignore
+
+
+            b.HasKey("id") |> ignore
+
+
+            b.ToTable("Users") |> ignore
+        )) |> ignore
+
+        modelBuilder.Entity("Models.Score", (fun b ->
+
+            b.HasOne("Models.User", "user")
+                .WithMany("scores")
+                .HasForeignKey("userId")
+                .OnDelete(DeleteBehavior.Cascade)|> ignore
         )) |> ignore
 

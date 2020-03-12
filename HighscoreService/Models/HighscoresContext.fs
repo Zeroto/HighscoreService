@@ -1,6 +1,7 @@
 ﻿namespace Models
 
 open Microsoft.EntityFrameworkCore
+open System.ComponentModel.DataAnnotations
 
 type [<CLIMutable>] User = {
   id: int

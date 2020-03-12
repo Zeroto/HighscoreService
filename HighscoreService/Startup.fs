@@ -23,7 +23,6 @@ type Startup private () =
     member this.ConfigureServices(services: IServiceCollection) =
         // Add framework services.
         services.AddControllers() |> ignore
-        //services.AddDbContext<HighscoresContext>(fun options -> options.UseNpgsql("Host=localhost;Database=highscores;Username=postgres") |> ignore) |> ignore
         services.AddDbContext<HighscoresContext>(fun options -> options.UseNpgsql(this.Configuration.GetConnectionString("HighscoreDatabase")) |> ignore) |> ignore
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -5,6 +5,13 @@ open Microsoft.Extensions.Logging
 open Models
 open System.Linq
 open Microsoft.EntityFrameworkCore
+open System.ComponentModel.DataAnnotations
+
+[<CLIMutable>]
+type NewUserRequest = {
+  [<Required>]
+  name: string
+}
 
 [<ApiController>]
 [<Route("[controller]")>]
@@ -29,10 +36,15 @@ type UsersController (logger : ILogger<UsersController>, highscoresContext: High
     } |> Async.StartAsTask
   
   [<HttpPost>]
-  member this.Create(user: User) =
+  member this.Create(user: NewUserRequest) =
+    let newUser = {
+      id = 0
+      name = user.name
+      scores = ResizeArray<Score>()
+    }
     async {
-      do! highscoresContext.Users.AddAsync(user) |> Async.AwaitTask |> Async.Ignore
+      do! highscoresContext.Users.AddAsync(newUser) |> Async.AwaitTask |> Async.Ignore
       do! highscoresContext.SaveChangesAsync() |> Async.AwaitTask |> Async.Ignore
 
-      return this.Created(sprintf "/Users/%d" user.id, user)
+      return this.Created(sprintf "/Users/%d" newUser.id, newUser)
     } |> Async.StartAsTask
