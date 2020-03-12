@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Models\HighscoresContext.fs" />
+    <Compile Include="WeatherForecast.fs" />
+    <Compile Include="Controllers\UsersController.fs" />
+    <Compile Include="Controllers\HighscoresController.fs" />
+    <Compile Include="Controllers/WeatherForecastController.fs" />
+    <Compile Include="Startup.fs" />
+    <Compile Include="DesignTime\HighscoresContextFactory.fs" />
+    <Compile Include="Migrations\20200311173540_fixUserTable.fs" />
+    <Compile Include="Migrations\20200311171410_addedUserTable.fs" />
+    <Compile Include="Migrations\20200311121226_initialCreate.fs" />
+    <Compile Include="Migrations\HighscoresContextModelSnapshot.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Bricelam.EntityFrameworkCore.FSharp" Version="2.2.0-alpha1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.2.4" />
+  </ItemGroup>
+
+</Project>
