@@ -6,6 +6,7 @@ open Models
 open System.Linq
 open Microsoft.EntityFrameworkCore
 open System.ComponentModel.DataAnnotations
+open System.Security.Claims
 
 [<CLIMutable>]
 type NewUserRequest = {
@@ -19,11 +20,12 @@ type UsersController (logger : ILogger<UsersController>, highscoresContext: High
   inherit ControllerBase()
 
   [<HttpGet("{id}")>]
-  member this.Get(id: int) =
+  member this.Get(id: System.Guid) =
     async {
       let! users =
         highscoresContext.Users
           .Where(fun u -> u.id = id)
+          .Include(fun u -> u.scores)
           .Take(1)
           .ToListAsync()
         |> Async.AwaitTask
@@ -31,20 +33,27 @@ type UsersController (logger : ILogger<UsersController>, highscoresContext: High
       let result: ActionResult =
         match user with
         | None -> upcast this.NotFound()
-        | Some u -> upcast this.Ok(u)
+        | Some u -> upcast this.Ok({| id = u.id
+                                      name = u.name
+                                      scores = u.scores
+                                    |})
       return result
     } |> Async.StartAsTask
   
   [<HttpPost>]
   member this.Create(user: NewUserRequest) =
+    let clientId = this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value |> System.Guid.Parse
+
     let newUser = {
-      id = 0
+      id = System.Guid.NewGuid()
+      clientId = clientId
+      client = Client.none
       name = user.name
       scores = ResizeArray<Score>()
     }
     async {
-      do! highscoresContext.Users.AddAsync(newUser) |> Async.AwaitTask |> Async.Ignore
+      do! highscoresContext.Users.AddAsync(newUser).AsTask() |> Async.AwaitTask |> Async.Ignore
       do! highscoresContext.SaveChangesAsync() |> Async.AwaitTask |> Async.Ignore
 
-      return this.Created(sprintf "/Users/%d" newUser.id, newUser)
+      return this.Created(sprintf "/Users/%O" newUser.id, {|id = newUser.id; name = newUser.name|})
     } |> Async.StartAsTask

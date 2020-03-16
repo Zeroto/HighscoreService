@@ -6,12 +6,13 @@ open Models
 open System.Linq
 open System
 open Microsoft.EntityFrameworkCore
+open System.Security.Claims
 
 type ScoreResponse = {
-  id: int
+  id: System.Guid
   value: int
   user:
-    {| id: int
+    {| id: System.Guid
        name: string
     |}
 }
@@ -48,8 +49,10 @@ type HighscoresController (logger : ILogger<HighscoresController>, highscoresCon
     
 
   [<HttpPost>]
-  member __.Post (score: Models.Score) =
+  member this.Post (score: Models.Score) =
+    let clientId = this.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value |> System.Guid.Parse
+    let newScore = {score with clientId = clientId}
     async {
-      do! highscoresContext.Scores.AddAsync(score) |> Async.AwaitTask |> Async.Ignore
+      do! highscoresContext.Scores.AddAsync(newScore).AsTask() |> Async.AwaitTask |> Async.Ignore
       do! highscoresContext.SaveChangesAsync() |> Async.AwaitTask |> Async.Ignore
     } |> Async.StartAsTask

@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "HighscoreService", "HighscoreService\HighscoreService.fsproj", "{6C525F26-9241-414B-8849-389803B3C091}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "HighscoreService", "HighscoreService\HighscoreService.fsproj", "{6C525F26-9241-414B-8849-389803B3C091}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Migrations", "Migrations\Migrations.csproj", "{0A51D8C9-C3F7-4959-8FE6-587D2EB4511E}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Highscores", "Highscores\Highscores.fsproj", "{D24D9AD5-CA71-4085-9603-62B020F66683}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{6C525F26-9241-414B-8849-389803B3C091}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C525F26-9241-414B-8849-389803B3C091}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C525F26-9241-414B-8849-389803B3C091}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A51D8C9-C3F7-4959-8FE6-587D2EB4511E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A51D8C9-C3F7-4959-8FE6-587D2EB4511E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A51D8C9-C3F7-4959-8FE6-587D2EB4511E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A51D8C9-C3F7-4959-8FE6-587D2EB4511E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D24D9AD5-CA71-4085-9603-62B020F66683}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D24D9AD5-CA71-4085-9603-62B020F66683}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D24D9AD5-CA71-4085-9603-62B020F66683}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D24D9AD5-CA71-4085-9603-62B020F66683}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
